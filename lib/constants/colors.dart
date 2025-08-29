@@ -19,4 +19,7 @@ class AppColors {
   static const Color socialButtonBg = Colors.black; // Social button background
   static const Color socialBorder = Color(0x4DFFFFFF); // Social button border
   static const Color inactiveTab = Color(0xFF3A3A3A); // Inactive tab color
+  static const Color divider = Color(0x33FFFFFF); // For horizontal dividers
+static const Color border = Color(0x1AFFFFFF);  // For input/social borders
+
 }

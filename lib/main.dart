@@ -1,11 +1,12 @@
+import 'package:bite_rush/screens/login_screen.dart';
+import 'package:bite_rush/screens/signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'providers/product_provider.dart';
 import 'providers/cart_provider.dart';
-import 'providers/auth_provider.dart';
-import 'routes.dart';
+import 'package:bite_rush/providers/auth_provider.dart';
+import 'package:bite_rush/routes.dart';
 import 'theme.dart';
-import 'screens/login_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,14 +26,17 @@ class MyApp extends StatelessWidget {
         builder: (context, auth, _) {
           return MaterialApp(
             title: 'Bite Rush',
-            theme: AppTheme.theme, // fixed: use 'theme' instead of 'lightTheme'
+            theme: AppTheme.theme,
             debugShowCheckedModeBanner: false,
             home: LoginWrapper(auth: auth),
-            routes: AppRoutes.routes,
+            routes: {
+              ...AppRoutes.routes, // keep your existing routes
+              '/signup': (context) => SignupScreen(), // ✅ added signup route
+            },
           );
         },
       ),
-    ); // <-- Added missing semicolon here
+    );
   }
 }
 
@@ -49,15 +53,17 @@ class _LoginWrapperState extends State<LoginWrapper> {
   @override
   void initState() {
     super.initState();
-    // Delay navigation until first frame is rendered
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      widget.auth.tryAutoLogin().then((loggedIn) {
-        if (loggedIn) {
-          Navigator.pushReplacementNamed(context, '/home');
-        }
-      }).catchError((_) {
-        // Stay on login screen if auto-login fails
-      });
+      widget.auth
+          .tryAutoLogin()
+          .then((loggedIn) {
+            if (loggedIn) {
+              Navigator.pushReplacementNamed(context, '/home');
+            }
+          })
+          .catchError((_) {
+            // Stay on login screen if auto-login fails
+          });
     });
   }
 

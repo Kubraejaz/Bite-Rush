@@ -49,4 +49,6 @@ class AuthProvider with ChangeNotifier {
     }
     return false;
   }
+
+  signupWithPhone(String s) {}
 }

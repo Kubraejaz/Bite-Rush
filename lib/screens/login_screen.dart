@@ -6,7 +6,6 @@ import 'package:bite_rush/widgets/social_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-
 class LoginScreen extends StatefulWidget {
   static const routeName = '/login';
 
@@ -30,7 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
         screenHeight - mediaQuery.padding.top - mediaQuery.padding.bottom;
 
     return Scaffold(
-      resizeToAvoidBottomInset: false, // Prevent resizing when keyboard appears
+      resizeToAvoidBottomInset: false,
       backgroundColor: AppColors.background,
       body: SafeArea(
         child: Container(
@@ -38,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
             children: [
-              // Header Section - 10% of screen
+              // Header Section - 10%
               Container(
                 height: safeAreaHeight * 0.1,
                 child: Align(
@@ -79,7 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
 
-              // Title Section - 15% of screen
+              // Title Section - 15%
               Container(
                 height: safeAreaHeight * 0.15,
                 child: Column(
@@ -104,13 +103,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
 
-              // Form Section - 60% of screen
+              // Form Section - 60%
               Expanded(
                 flex: 6,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Spacer(flex: 5),
+
+                    // Toggle Email / Phone
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(4),
@@ -122,25 +123,28 @@ class _LoginScreenState extends State<LoginScreen> {
                         children: [
                           Expanded(
                             child: GestureDetector(
-                              onTap: () => setState(() => _isEmailSelected = true),
+                              onTap:
+                                  () => setState(() => _isEmailSelected = true),
                               child: AnimatedContainer(
                                 duration: const Duration(milliseconds: 200),
                                 padding: const EdgeInsets.symmetric(
                                   vertical: 12,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: _isEmailSelected
-                                      ? AppColors.neonGreen
-                                      : Colors.transparent,
+                                  color:
+                                      _isEmailSelected
+                                          ? AppColors.neonGreen
+                                          : Colors.transparent,
                                   borderRadius: BorderRadius.circular(21),
                                 ),
                                 alignment: Alignment.center,
                                 child: Text(
                                   'Email',
                                   style: TextStyle(
-                                    color: _isEmailSelected
-                                        ? AppColors.buttonTextOnNeon
-                                        : AppColors.white,
+                                    color:
+                                        _isEmailSelected
+                                            ? AppColors.buttonTextOnNeon
+                                            : AppColors.white,
                                     fontWeight: FontWeight.w600,
                                     fontSize: 14,
                                   ),
@@ -150,16 +154,19 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           Expanded(
                             child: GestureDetector(
-                              onTap: () => setState(() => _isEmailSelected = false),
+                              onTap:
+                                  () =>
+                                      setState(() => _isEmailSelected = false),
                               child: AnimatedContainer(
                                 duration: const Duration(milliseconds: 200),
                                 padding: const EdgeInsets.symmetric(
                                   vertical: 12,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: !_isEmailSelected
-                                      ? AppColors.neonGreen
-                                      : Colors.transparent,
+                                  color:
+                                      !_isEmailSelected
+                                          ? AppColors.neonGreen
+                                          : Colors.transparent,
                                   borderRadius: BorderRadius.circular(21),
                                 ),
                                 alignment: Alignment.center,
@@ -167,9 +174,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                   child: Text(
                                     'Phone Number',
                                     style: TextStyle(
-                                      color: !_isEmailSelected
-                                          ? AppColors.buttonTextOnNeon
-                                          : AppColors.white,
+                                      color:
+                                          !_isEmailSelected
+                                              ? AppColors.buttonTextOnNeon
+                                              : AppColors.white,
                                       fontWeight: FontWeight.w600,
                                       fontSize: 14,
                                     ),
@@ -192,31 +200,39 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 6),
                     InputField(
                       controller: _emailController,
-                      hint: _isEmailSelected ? AppStrings.emailHint : "Enter Phone Number",
-                      icon: _isEmailSelected ? Icons.email_outlined : Icons.phone_outlined,
-                      keyboardType: _isEmailSelected ? TextInputType.emailAddress : TextInputType.phone,
+                      hint:
+                          _isEmailSelected
+                              ? AppStrings.emailHint
+                              : "Enter Phone Number",
+                      icon:
+                          _isEmailSelected
+                              ? Icons.email_outlined
+                              : Icons.phone_outlined,
+                      keyboardType:
+                          _isEmailSelected
+                              ? TextInputType.emailAddress
+                              : TextInputType.phone,
                     ),
 
                     const Spacer(flex: 2),
 
-                    // Second Input Field (Password / OTP)
+                    // Second Input Field (Password only)
                     Text(
-                      _isEmailSelected ? "Password" : "OTP",
+                      "Password",
                       style: TextStyle(color: AppColors.white, fontSize: 14),
                     ),
                     const SizedBox(height: 6),
                     InputField(
                       controller: _passwordController,
-                      hint: _isEmailSelected ? AppStrings.passwordHint : "Enter OTP",
-                      icon: _isEmailSelected ? Icons.lock_outline : Icons.lock_clock_outlined,
-                      obscure: _isEmailSelected, // OTP optional
-                     keyboardType: _isEmailSelected ? TextInputType.text : TextInputType.number,
-
+                      hint: AppStrings.passwordHint,
+                      icon: Icons.lock_outline,
+                      obscure: true,
+                      keyboardType: TextInputType.text,
                     ),
 
                     const Spacer(flex: 2),
 
-                    // Remember me and Forgot password
+                    // Remember me + Forgot Password
                     Row(
                       children: [
                         Expanded(
@@ -227,10 +243,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                 width: 18,
                                 child: Checkbox(
                                   value: _rememberMe,
-                                  onChanged: (v) => setState(() => _rememberMe = v ?? false),
+                                  onChanged:
+                                      (v) => setState(
+                                        () => _rememberMe = v ?? false,
+                                      ),
                                   activeColor: AppColors.neonGreen,
                                   checkColor: AppColors.buttonTextOnNeon,
-                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                  materialTapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
                                 ),
                               ),
                               const SizedBox(width: 6),
@@ -249,7 +269,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         TextButton(
                           onPressed: () {},
                           style: TextButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 4,
+                              vertical: 4,
+                            ),
                             minimumSize: Size.zero,
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           ),
@@ -276,7 +299,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           BoxShadow(
                             color: AppColors.neonGreen.withOpacity(0.3),
                             blurRadius: 20,
-                            spreadRadius: 0,
                             offset: const Offset(0, 6),
                           ),
                         ],
@@ -355,9 +377,36 @@ class _LoginScreenState extends State<LoginScreen> {
                     // Social Buttons
                     screenWidth < 350
                         ? Column(
-                            children: [
-                              SizedBox(
-                                width: double.infinity,
+                          children: [
+                            SizedBox(
+                              width: double.infinity,
+                              height: 48,
+                              child: SocialButton(
+                                label: AppStrings.apple,
+                                icon: Icons.apple,
+                                onTap: () {},
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            SizedBox(
+                              width: double.infinity,
+                              height: 48,
+                              child: SocialButton(
+                                label: AppStrings.google,
+                                iconWidget: Image.asset(
+                                  'assets/images/search.png',
+                                  height: 16,
+                                  width: 16,
+                                ),
+                                onTap: () {},
+                              ),
+                            ),
+                          ],
+                        )
+                        : Row(
+                          children: [
+                            Expanded(
+                              child: SizedBox(
                                 height: 48,
                                 child: SocialButton(
                                   label: AppStrings.apple,
@@ -365,9 +414,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                   onTap: () {},
                                 ),
                               ),
-                              const SizedBox(height: 8),
-                              SizedBox(
-                                width: double.infinity,
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: SizedBox(
                                 height: 48,
                                 child: SocialButton(
                                   label: AppStrings.google,
@@ -379,42 +429,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                   onTap: () {},
                                 ),
                               ),
-                            ],
-                          )
-                        : Row(
-                            children: [
-                              Expanded(
-                                child: SizedBox(
-                                  height: 48,
-                                  child: SocialButton(
-                                    label: AppStrings.apple,
-                                    icon: Icons.apple,
-                                    onTap: () {},
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: SizedBox(
-                                  height: 48,
-                                  child: SocialButton(
-                                    label: AppStrings.google,
-                                    iconWidget: Image.asset(
-                                      'assets/images/search.png',
-                                      height: 16,
-                                      width: 16,
-                                    ),
-                                    onTap: () {},
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
+                        ),
                   ],
                 ),
               ),
 
-              // Footer Section - 15% of screen
+              // Footer Section - 15%
               Container(
                 height: safeAreaHeight * 0.15,
                 child: Center(
@@ -430,7 +452,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(width: 4),
                       GestureDetector(
-                        onTap: () => Navigator.pushNamed(context, '/signup'),
+                        onTap:
+                            () => Navigator.pushReplacementNamed(
+                              context,
+                              '/signup',
+                            ),
                         child: Text(
                           AppStrings.signUp,
                           style: TextStyle(
