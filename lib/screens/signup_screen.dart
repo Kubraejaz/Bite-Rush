@@ -1,6 +1,7 @@
 import 'package:bite_rush/constants/colors.dart';
-import 'package:bite_rush/constants/strings.dart'; // ✅ import AppStrings
+import 'package:bite_rush/constants/strings.dart';
 import 'package:bite_rush/providers/auth_provider.dart';
+import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -13,28 +14,40 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   final _phoneController = TextEditingController();
-  String _selectedCountryCode = '+237';
+  Country _selectedCountry = Country(
+    phoneCode: '92',
+    countryCode: 'PK',
+    e164Sc: 0,
+    geographic: true,
+    level: 1,
+    name: 'Pakistan',
+    example: '301 2345678',
+    displayName: 'Pakistan',
+    displayNameNoCountryCode: 'Pakistan',
+    e164Key: '',
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    // Initial value with default country code
+    _phoneController.text = '+${_selectedCountry.phoneCode} ';
+  }
 
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    final mediaQuery = MediaQuery.of(context);
-    final screenHeight = mediaQuery.size.height;
-    final safeAreaHeight =
-        screenHeight - mediaQuery.padding.top - mediaQuery.padding.bottom;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: AppColors.background,
       body: SafeArea(
-        child: Container(
-          height: safeAreaHeight,
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Column(
             children: [
-              SizedBox(height: safeAreaHeight * 0.05),
-
-              /// Logo Section
+              const SizedBox(height: 30),
+              // Logo
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -67,10 +80,8 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                 ],
               ),
-
-              SizedBox(height: safeAreaHeight * 0.02),
-
-              /// Title Section
+              const SizedBox(height: 16),
+              // Title & Description
               Text(
                 AppStrings.createAccount,
                 textAlign: TextAlign.center,
@@ -81,21 +92,18 @@ class _SignupScreenState extends State<SignupScreen> {
                   height: 1.3,
                 ),
               ),
-
-              SizedBox(height: safeAreaHeight * 0.02),
-
+              const SizedBox(height: 12),
               Text(
                 AppStrings.signupDescription,
                 textAlign: TextAlign.center,
                 style: TextStyle(color: AppColors.white70, fontSize: 14),
               ),
+              const SizedBox(height: 20),
 
-              SizedBox(height: safeAreaHeight * 0.03),
-
-              /// Social Buttons
+              // Social Buttons
               _buildSocialButton(
                 icon: Icons.apple,
-                text: "${AppStrings.apple}",
+                text: AppStrings.apples,
                 onTap: () {},
               ),
               const SizedBox(height: 10),
@@ -113,21 +121,18 @@ class _SignupScreenState extends State<SignupScreen> {
                     fit: BoxFit.contain,
                   ),
                 ),
-                text: "${AppStrings.google}",
+                text: AppStrings.googles,
                 onTap: () {},
               ),
               const SizedBox(height: 12),
               _buildSocialButton(
                 icon: Icons.email,
-                text: AppStrings.signUp,
-                onTap: () {
-                  // Navigate to email signup form
-                },
+                text: AppStrings.gmail,
+                onTap: () {},
               ),
+              const SizedBox(height: 24),
 
-              SizedBox(height: safeAreaHeight * 0.04),
-
-              /// Divider
+              // Divider
               Row(
                 children: [
                   const Expanded(
@@ -137,7 +142,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Text(
                       AppStrings.orSignInWith,
-                      style: TextStyle(color: AppColors.white54, fontSize: 12),
+                      style: TextStyle(color: AppColors.white70, fontSize: 12),
                     ),
                   ),
                   const Expanded(
@@ -145,10 +150,9 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                 ],
               ),
+              const SizedBox(height: 20),
 
-              SizedBox(height: safeAreaHeight * 0.03),
-
-              /// Phone Number Label
+              // Phone Label
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -162,112 +166,121 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
               const SizedBox(height: 12),
 
-              /// Country code + Phone number fields
+              // Country Picker + Phone Input
               Row(
                 children: [
-                  // Country code field with flag
-                  Container(
-                    height: 56,
-                    width: 110,
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(
-                      color: AppColors.softDark,
-                      borderRadius: BorderRadius.circular(32),
-                      border: Border.all(color: AppColors.border, width: 1),
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 20,
-                          height: 20,
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              colors: [Colors.red, Colors.yellow, Colors.green],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: DropdownButtonHideUnderline(
-                            child: DropdownButton<String>(
-                              value: _selectedCountryCode,
-                              icon: Icon(
-                                Icons.keyboard_arrow_down,
-                                color: AppColors.white,
-                                size: 18,
+                  Expanded(
+                    flex: 3,
+                    child: GestureDetector(
+                      onTap: () {
+                        showCountryPicker(
+                          context: context,
+                          showPhoneCode: true,
+                          countryListTheme: CountryListThemeData(
+                            backgroundColor: AppColors.background,
+                            textStyle: TextStyle(color: AppColors.white),
+                            bottomSheetHeight: 500,
+                            inputDecoration: InputDecoration(
+                              labelText: 'Search',
+                              labelStyle: TextStyle(color: AppColors.white70),
+                              hintText: 'Enter country name',
+                              hintStyle: TextStyle(color: AppColors.white38),
+                              prefixIcon: Icon(
+                                Icons.search,
+                                color: AppColors.white70,
                               ),
-                              dropdownColor: AppColors.softDark,
-                              items:
-                                  ['+237', '+1', '+44', '+91', '+33']
-                                      .map(
-                                        (String value) =>
-                                            DropdownMenuItem<String>(
-                                              value: value,
-                                              child: Text(
-                                                value,
-                                                style: TextStyle(
-                                                  color: AppColors.white,
-                                                  fontSize: 14,
-                                                ),
-                                              ),
-                                            ),
-                                      )
-                                      .toList(),
-                              onChanged: (String? newValue) {
-                                if (newValue != null) {
-                                  setState(() {
-                                    _selectedCountryCode = newValue;
-                                  });
-                                }
-                              },
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: AppColors.white38,
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: AppColors.neonGreen,
+                                ),
+                              ),
                             ),
                           ),
+                          onSelect: (Country country) {
+                            setState(() {
+                              _selectedCountry = country;
+                              // When country changes, update text with country code
+                              _phoneController.text = '+${country.phoneCode} ';
+                            });
+                          },
+                        );
+                      },
+                      child: Container(
+                        height: 56,
+                        decoration: BoxDecoration(
+                          color: AppColors.softDark,
+                          borderRadius: BorderRadius.circular(28),
+                          border: Border.all(color: AppColors.border, width: 1),
                         ),
-                      ],
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: Row(
+                          children: [
+                            // Flag emoji - reduced size
+                            Text(
+                              _selectedCountry.flagEmoji,
+                              style: TextStyle(fontSize: 20),
+                            ),
+                            const SizedBox(width: 6),
+                            Flexible(
+                              child: Text(
+                                '+${_selectedCountry.phoneCode}',
+                                style: TextStyle(
+                                  color: AppColors.white,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            const SizedBox(width: 4),
+                            Icon(
+                              Icons.keyboard_arrow_down,
+                              color: AppColors.white,
+                              size: 20,
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
-                  const SizedBox(width: 8),
-
-                  /// Phone number input
+                  const SizedBox(width: 12),
                   Expanded(
+                    flex: 7,
                     child: Container(
                       height: 56,
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
                       decoration: BoxDecoration(
                         color: AppColors.softDark,
-                        borderRadius: BorderRadius.circular(30),
+                        borderRadius: BorderRadius.circular(28),
                         border: Border.all(color: AppColors.border, width: 1),
                       ),
-                      child: Center(
-                        child: TextField(
-                          controller: _phoneController,
-                          keyboardType: TextInputType.phone,
-                          style: TextStyle(
-                            color: AppColors.white,
-                            fontSize: 16,
+                      child: TextField(
+                        controller: _phoneController,
+                        keyboardType: TextInputType.phone,
+                        style: TextStyle(
+                          color: AppColors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 16,
                           ),
-                          decoration: InputDecoration(
-                            hintText: AppStrings.phoneHint,
-                            hintStyle: TextStyle(
-                              color: AppColors.white54,
-                              fontSize: 14,
-                            ),
-                            border: InputBorder.none,
-                            isCollapsed: true,
-                          ),
+                          border: InputBorder.none,
                         ),
                       ),
                     ),
                   ),
                 ],
               ),
+              const SizedBox(height: 24),
 
-              SizedBox(height: safeAreaHeight * 0.02),
-
-              /// Continue Button
+              // Continue Button
               SizedBox(
                 width: double.infinity,
                 height: 50,
@@ -275,9 +288,8 @@ class _SignupScreenState extends State<SignupScreen> {
                   onPressed: () async {
                     if (_phoneController.text.trim().isNotEmpty) {
                       try {
-                        await authProvider.signupWithPhone(
-                          _selectedCountryCode + _phoneController.text.trim(),
-                        );
+                        final fullPhoneNumber = _phoneController.text.trim();
+                        await authProvider.signupWithPhone(fullPhoneNumber);
                         if (!mounted) return;
                         Navigator.pushReplacementNamed(context, '/home');
                       } catch (e) {
@@ -285,17 +297,62 @@ class _SignupScreenState extends State<SignupScreen> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(AppStrings.errorGeneral),
-                            backgroundColor: AppColors.accentRed,
+                            behavior: SnackBarBehavior.floating,
+                            backgroundColor: AppColors.softDark,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              side: BorderSide(
+                                color: AppColors.neonGreen,
+                                width: 2,
+                              ),
+                            ),
+                            margin: const EdgeInsets.symmetric(
+                              horizontal: 24,
+                              vertical: 12,
+                            ),
+                            elevation: 4,
+                            duration: const Duration(seconds: 3),
+                            action: SnackBarAction(
+                              label: 'OK',
+                              textColor: AppColors.neonGreen,
+                              onPressed: () {},
+                            ),
                           ),
                         );
                       }
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("Please enter a phone number"),
+                          behavior: SnackBarBehavior.floating,
+                          backgroundColor: AppColors.softDark,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            side: BorderSide(
+                              color: AppColors.neonGreen,
+                              width: 2,
+                            ),
+                          ),
+                          margin: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 12,
+                          ),
+                          elevation: 4,
+                          duration: const Duration(seconds: 3),
+                          action: SnackBarAction(
+                            label: 'OK',
+                            textColor: AppColors.neonGreen,
+                            onPressed: () {},
+                          ),
+                        ),
+                      );
                     }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.neonGreen,
                     foregroundColor: AppColors.buttonTextOnNeon,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(28),
+                      borderRadius: BorderRadius.circular(25),
                     ),
                     elevation: 0,
                   ),
@@ -306,9 +363,9 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
               ),
 
-              const Spacer(),
+              const SizedBox(height: 65),
 
-              /// Bottom Login Link
+              // Bottom Login Link
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -316,6 +373,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     AppStrings.alreadyHaveAccount,
                     style: TextStyle(color: AppColors.white70, fontSize: 14),
                   ),
+                  const SizedBox(width: 4),
                   GestureDetector(
                     onTap: () => Navigator.pushNamed(context, '/login'),
                     child: Text(
@@ -330,7 +388,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 ],
               ),
 
-              SizedBox(height: safeAreaHeight * 0.06),
+              const SizedBox(height: 30),
             ],
           ),
         ),
@@ -338,7 +396,6 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 
-  /// Reusable Social Button
   Widget _buildSocialButton({
     IconData? icon,
     Widget? iconWidget,

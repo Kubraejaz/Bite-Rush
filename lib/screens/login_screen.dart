@@ -318,8 +318,27 @@ class _LoginScreenState extends State<LoginScreen> {
                             if (mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                  content: Text('Login failed'),
-                                  backgroundColor: AppColors.accentRed,
+                                  content: Text("Login failed"),
+                                  behavior: SnackBarBehavior.floating,
+                                  backgroundColor: AppColors.softDark,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    side: BorderSide(
+                                      color: AppColors.neonGreen,
+                                      width: 2,
+                                    ),
+                                  ),
+                                  margin: const EdgeInsets.symmetric(
+                                    horizontal: 24,
+                                    vertical: 12,
+                                  ),
+                                  elevation: 4,
+                                  duration: const Duration(seconds: 3),
+                                  action: SnackBarAction(
+                                    label: 'OK',
+                                    textColor: AppColors.neonGreen,
+                                    onPressed: () {},
+                                  ),
                                 ),
                               );
                             }
@@ -458,7 +477,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               '/signup',
                             ),
                         child: Text(
-                          AppStrings.signUp,
+                          AppStrings.signUps,
                           style: TextStyle(
                             color: AppColors.neonGreen,
                             fontWeight: FontWeight.w600,

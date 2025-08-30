@@ -8,6 +8,7 @@ import 'package:bite_rush/providers/auth_provider.dart';
 import 'package:bite_rush/routes.dart';
 import 'theme.dart';
 
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
